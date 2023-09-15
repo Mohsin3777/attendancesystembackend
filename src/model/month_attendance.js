@@ -14,11 +14,11 @@ type:String
       type:String
           },
     attendance :[
- {
-        type: mongoose.Schema.Types.ObjectId,
+//  {
+//         type: mongoose.Schema.Types.ObjectId,
 
-        ref:'Attendance'
-      }
+//         ref:'Attendance'
+//       }
     
       
     ]

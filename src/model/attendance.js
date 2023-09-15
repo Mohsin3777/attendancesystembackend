@@ -27,6 +27,10 @@ const attendanceSchema = new mongoose.Schema({
     ref: 'Student',
     required: true,
   },
+  registered:{
+    type:Boolean,
+    default:false
+  },
   date: {
     type: Date,
     required: true,
@@ -40,13 +44,7 @@ const attendanceSchema = new mongoose.Schema({
 
 });
 
-const attendanceMonthSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    required: true,
-  },
-  attendance :[]
-})
+
 
 module.exports = mongoose.model('Attendance', attendanceSchema);
 
