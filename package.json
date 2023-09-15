@@ -1,0 +1,21 @@
+{
+  "name": "proj1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "mail": "nodemon ./src/nodemaler/indx.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "nodemailer": "^6.9.5",
+    "nodemon": "^3.0.1"
+  }
+}
