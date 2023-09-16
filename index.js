@@ -15,10 +15,12 @@ databaseConnection.connect();
 
 //route import
 const attendanceRoute =require('./src/routes/attendance_route')
-
+const registerUserRoute =require('./src/routes/register_user_route')
+const userRoute =require('./src/routes/user_routes')
 //routes
 app.use("/api/attendance", attendanceRoute);
-
+app.use("/api/registerUser", registerUserRoute);
+app.use("/api/userDoc", userRoute);
 
 app.post('/',async(req,res)=>{
     const data={

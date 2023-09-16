@@ -18,7 +18,6 @@ router.post('/createAttendance',markAttendance)
 router.put('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
 
-router.post('/registeredUser/:_id',registerStudent)
-router.get('/listOfregisteredUser/',getListOfregisterStudent)
+
 
 module.exports =router;
