@@ -4,13 +4,14 @@ const{
   
 
     registerStudent,
-    getListOfregisterStudent
+    getListOfregisterStudent,
+    
    
     
 } = require('../controller/register_user_controller')
 
 
-router.post('/registeredUser/:_id',registerStudent)
+router.put('/registeredUser/:_id',registerStudent)
 router.get('/listOfregisteredUser/',getListOfregisterStudent)
 
 

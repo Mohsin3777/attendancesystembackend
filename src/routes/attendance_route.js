@@ -4,6 +4,8 @@ const{
     markAttendance,
     addAttendance,
     getSingleDayAttendance,
+    addStudentsInAttendance,
+    
 
     registerStudent,
     getListOfregisterStudent
@@ -17,6 +19,7 @@ const{
 router.post('/createAttendance',markAttendance)
 router.put('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
+router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
 
 
 

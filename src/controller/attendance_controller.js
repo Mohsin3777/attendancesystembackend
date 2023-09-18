@@ -1,6 +1,8 @@
 const attendanceMonth = require('../model/month_attendance')
 const Attendance = require('../model/attendance');
-const Student = require('../model/student')
+const Student = require('../model/student');
+const attendance = require('../model/attendance');
+const student = require('../model/student');
 var list = [
     "january",
     "febrary",
@@ -62,7 +64,7 @@ const createAttendance11 = async (req, res) => {
             // $push :{attendance:  newAttendance}
         })
 
-        console.log(new1)
+        // console.log(new1)
         await new1.save()
 
         return res.status(200).json({
@@ -79,21 +81,31 @@ const createAttendance = async (req, res) => {
 
     var studentid_with_status = []
     try {
+var d=new Date()
+console.log(d)
+
+console.log(d.getDay()+ ' '+d.getMonth()+ ' ' +d.getFullYear())
+        var atten = await  attendanceMonth.findOne({date:{ $gte: d.setHours(0, 0, 0, 0), $lt: d.setHours(23, 59, 59, 999) } })
+        if (atten) {
+            // console.log(atten)
+            return res.status(400).json({ message:"Already created" })
+        }
+var students =await Student.find({registered:true})
 
 
         
         var attendance = await Attendance.find({registered:{$in:true}})
 
         if (!attendance) {
-            return res.status(400).json({ message: "List is Empty" })
+            // return res.status(400).json({ message: "List is Empty" })
         }
 // console.log(attendance)
-for (var j = 0; j < attendance.length; j++){
+// for (var j = 0; j < attendance.length; j++){
 
-    console.log(attendance[j].registered);
-    studentid_with_status.push(attendance[j]._id)
+//     console.log(attendance[j].registered);
+//     studentid_with_status.push(attendance[j]._id)
     
-    }
+//     }
 
         const date = new Date();
         const currentMonth = date.getMonth();
@@ -103,9 +115,8 @@ for (var j = 0; j < attendance.length; j++){
 
 
         var new1 = new attendanceMonth({
-            // date:  Date("2023-09-14T08:45:28.662Z"), 
-            // date: new Date("2018-10-24T08:55:13.331Z"),
-            date:Date.now(),
+        
+            date:date.getTime(),
             monthNo: studentid_with_status[currentMonth],
             DayNo:currentday.toString(),
             attendance: studentid_with_status
@@ -126,6 +137,56 @@ for (var j = 0; j < attendance.length; j++){
     }
 }
 
+
+const addStudentsInAttendance= async(req,res)=>{
+    try {
+        const attenDanceMonth= await attendanceMonth.findById({_id:req.params._id})
+var studentid_with_status=[]
+var listOFAttendanceIds=[]
+    if(!attenDanceMonth){
+        return res.status(400).json({success:false,message:"attendancemonth not found"})
+    }
+
+    const attendance = await Attendance.find()
+
+    if(!attendance){
+        return res.status(400).json({success:false,message:"attendance not found"})
+    }
+
+  
+
+
+    // students.map((val) => {
+         
+
+    //     studentid_with_status.push(Attendance({
+    //         studentId: val['_id'], // Replace with the actual student ID
+    //         date: Date.now(),     // Use the current date
+    //         status: 'absent',
+    //     }))
+
+        
+    // })
+    // console.log(studentid_with_status)
+    
+    attendance.map((val)=>{
+        console.log(val._id.toHexString())
+        listOFAttendanceIds.push(val._id.toHexString())
+                })
+    
+
+
+ var updateData=    await attendanceMonth.findByIdAndUpdate({_id:req.params._id},{
+        attendance: listOFAttendanceIds
+    },
+    
+    {new:true})
+
+return res.status(200).json({success:true,data:updateData})
+    } catch (error) {
+        return res.status(500).json({success:false,message:error.toString()})
+    }
+}
 
 
 
@@ -199,8 +260,10 @@ const getSingleDayAttendance = async (req, res) => {
            
             )
             // .populate('attendance')
+            
             .populate({
                 path:'attendance',
+                // populate: { path: 'attendance' },
                 model: 'Attendance',
                 populate:{
                     path: 'studentId'
@@ -212,7 +275,7 @@ const getSingleDayAttendance = async (req, res) => {
         if (!monthAttendance)
             return res.status(400).json({ success: false, message: "not found" })
 
-
+console.log(monthAttendance)
         return res.status(200).json({ success: true, data: monthAttendance })
     } catch (error) {
         return res.status(400).json({ success: true, error: error.message })
@@ -269,6 +332,7 @@ module.exports = {
     markAttendance: createAttendance,
     addAttendance,
     getSingleDayAttendance,
+    addStudentsInAttendance
 
 
     // getAllEventController,

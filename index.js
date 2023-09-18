@@ -109,22 +109,32 @@ res.status(200).json({
     res.status(500).json({error:error.message})
 }
 })
+const Attendc = require('./src/model/attendance');
 
 app.post('/addStudent',async(req,res)=>{
     try {
         const data =req.body
  var stude=        await Student({
             name:data.name,
-            rollNumber:data.rollNumber
+            rollNumber:data.rollNumber,
+            registered:data.registered
         })
-await stude.save()
+var d = await stude.save()
+var  attc = await  Attendc({
+    studentId: d._id, // Replace with the actual student ID
+    date: Date.now(),     // Use the current date
+    status: 'absent',
+})
+await attc.save()
 
-res.status(200).json({
-    data:stude
+return res.status(200).json({
+    data:attc
 })
 
+
+
     } catch (error) {
-        res.status(500).json({error:error.message})
+      return  res.status(500).json({error:error.message})
     }
 })
 
