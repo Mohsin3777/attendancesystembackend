@@ -82,18 +82,26 @@ const createAttendance = async (req, res) => {
 
 
         
-        var attendance = await Attendance.find({registered:{$in:true}})
+        // var attendance = await Attendance.find({registered:{$in:true}})
+              
+        var attendance = await Attendance.find().populate('studentId')
 
         if (!attendance) {
             return res.status(400).json({ message: "List is Empty" })
         }
 // console.log(attendance)
-for (var j = 0; j < attendance.length; j++){
 
-    console.log(attendance[j].registered);
-    studentid_with_status.push(attendance[j]._id)
-    
+attendance.map( (val)=>{
+    if(val.studentId.registered === true){
+        studentid_with_status.push(val)
     }
+})
+// for (var j = 0; j < attendance.length; j++){
+
+//     console.log(attendance[j].registered);
+//     studentid_with_status.push(attendance[j]._id)
+    
+//     }
 
         const date = new Date();
         const currentMonth = date.getMonth();
