@@ -17,7 +17,7 @@ const studentSchema = new mongoose.Schema({
     },
     profilePic:{
       type:String,
-      default:"https://images.unsplash.com/photo-1682685797507-d44d838b0ac7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw2fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60"
+      default:"https://images.unsplash.com/photo-1694793587915-38b73970e73d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOXx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=60"
     },
     registered:{
       type:Boolean,

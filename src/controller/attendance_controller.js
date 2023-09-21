@@ -1,8 +1,9 @@
 const attendanceMonth = require('../model/month_attendance')
 const Attendance = require('../model/attendance');
 const Student = require('../model/student');
-const attendance = require('../model/attendance');
-const student = require('../model/student');
+const { urlencoded } = require('express');
+
+
 var list = [
     "january",
     "febrary",
@@ -86,9 +87,20 @@ console.log(d)
 
 console.log(d.getDay()+ ' '+d.getMonth()+ ' ' +d.getFullYear())
         var atten = await  attendanceMonth.findOne({date:{ $gte: d.setHours(0, 0, 0, 0), $lt: d.setHours(23, 59, 59, 999) } })
+        .populate({
+            path:'attendance',
+            // populate: { path: 'attendance' },
+            model: 'Attendance',
+            populate:{
+                path: 'studentId'
+            }
+        }) 
         if (atten) {
             // console.log(atten)
-            return res.status(400).json({ message:"Already created" })
+            // return res.status(400).json({ message:"Already created" })
+            return res.status(200).json({success:true, message:"Already created" ,
+        data:atten
+        })
         }
 var students =await Student.find({registered:true})
 
@@ -198,6 +210,8 @@ return res.status(200).json({success:true,data:updateData})
 
 
 
+
+//mark single attendane
 const addAttendance = async (req, res) => {
 
 
@@ -208,25 +222,42 @@ const addAttendance = async (req, res) => {
 
 
 
-        var attendanceList = await attendanceMonth.findById({ _id: req.params._id });
+        var attendanceList = await attendanceMonth.findById({ _id: req.params._id })
+        .populate({
+            path:'attendance',
+            // populate: { path: 'attendance' },
+            model: 'Attendance',
+            populate:{
+                path: 'studentId'
+            }
+        }) 
+        ;
         if (!attendanceList) {
             return res.status(400).json({ success: false, message: "Not found" })
-        } else {
-    
+        } 
+ 
+        updateList = await updateSingleStatus(attendanceList.attendance,  data.attendanceId);
 
-            updateList = await updateSingelStatus(attendanceList['attendance'], 'absent', "present", data.studentId);
-
-            //  console.log(updateList)
-            var finalData = await attendanceMonth.findByIdAndUpdate(
-                {_id: req.params._id},
-                {attendance: updateList},
-                { new: true }
-            )
-            res.send(attendanceList)
-        }
-
+      console.log(updateList );
+        var finalData = await attendanceMonth.findByIdAndUpdate(
+            {_id: req.params._id},
+        {attendance: updateList},
+            { new: true }
+        ) 
+        
+        .populate({
+            path:'attendance',
+            // populate: { path: 'attendance' },
+            model: 'Attendance',
+            populate:{
+                path: 'studentId'
+            }
+        }) 
+     return   res.status(200).json({suucess:true,
+    data:finalData})
 
     } catch (error) {
+   
         return res.status(500).json({ error: error.message })
     }
 
@@ -311,17 +342,50 @@ var markAllpresent = (schools, oldName, name) => {
     });
 }
 
-var updateSingelStatus = (schools, oldName, name, id) => {
-    return schools.map(item => {
+var updateSingleStatus = (list,  id) => {
+    var newList=[]
+    list.map(item => {
+       
+        var temp = Object.assign({}, item);
+        
+     
+        if (item._id.toHexString() === id) {
+        //   console.log(item._id.toHexString() +'aaaa')
+        console.log(item+'aaaaa')
+           if( temp.status === 'present'){
+            // item.status = 'absent'
+
+          
+            item.set('status','absent')
+            console.log('abs')
+           }else{
+            // item.status = 'present'
+            item.set('status','present')
+            console.log('pres')
+           }
+            // if (temp.attendance.studentId.status === oldName) {
+             
+            // }
+        }
+
+        newList.push(item)
+
+          });
+          return newList;
+}
+
+
+var updateSingelStatus = (list, oldStatus, newStatus, id) => {
+    return list.map(item => {
 
         var temp = Object.assign({}, item);
 
-        console.log(temp.studentId.toHexString())
+
         if (temp.studentId.toHexString() === id) {
 
 
             if (temp.status === oldName) {
-                temp.status = name;
+                temp.status = newStatus;
             }
         }
         return temp;

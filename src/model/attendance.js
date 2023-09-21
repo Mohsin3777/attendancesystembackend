@@ -27,10 +27,10 @@ const attendanceSchema = new mongoose.Schema({
     ref: 'Student',
     required: true,
   },
-  registered:{
-    type:Boolean,
-    default:false
-  },
+  // registered:{
+  //   type:Boolean,
+  //   default:false
+  // },
   date: {
     type: Date,
     required: true,
