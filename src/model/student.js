@@ -7,7 +7,6 @@ const studentSchema = new mongoose.Schema({
     },
     rollNumber: {
       type: String,
-      index: true,
       unique: true,
       required: true,
       
