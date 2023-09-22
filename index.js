@@ -75,7 +75,8 @@ app.get('/', async (req, res) => {
 
 const Attendance = require('./src/model/attendance');
 const Student = require('./src/model/student');
-const attendanceMonth = require('./src/model/month_attendance')
+const attendanceMonth = require('./src/model/month_attendance');
+const month_attendance = require('./src/model/month_attendance');
 
 app.post('/markAttendance', async (req, res) => {
 
@@ -137,6 +138,83 @@ app.post('/addStudent', async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
+})
+
+// const attendanceMonth = require('./src/model/month_attendance')
+
+app.patch('/filter/:_id', async (req, res) => {
+    try {
+   
+    const d =await month_attendance.findOneAndUpdate(
+        {attendance :{$elemMatch:{status:{$eq:'absent'},}}},
+        // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+
+        // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+        // {id: req.params._id},
+
+    {$set:{'attendance.$[e].status':'present'}},
+
+    {arrayFilters:[{"e.status":{$eq:'absent'}} ]},
+    {new : true}
+    
+    
+    )
+    .populate({
+        path:'attendance',
+     
+        populate:{
+            path: 'studentId',
+            model:'Student'
+        }
+    }) 
+       return res.status(200).json({
+        userData:d,
+         
+        })
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+})
+
+
+app.get('/fd/:_id',async(req,res)=>{
+    try {
+   
+        const d =await month_attendance.findOne(
+            // {attendance :{$elemMatch:{status:{$eq:'present'},}}},
+        //  { $and:[  {_id :{$eq:req.params.id}}  , { attendance :{$elemMatch:{'_id':{$eq:'6508672131ccb6be176368ed'},}}}  ]}
+        //    {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+        // {$set:{'attendance.$.status':'present'}},
+        // {new : true}
+
+        { attendance :{$elemMatch:{'_id':{$eq:'6508672131ccb6be176368ed'},}}}
+        
+        
+        )
+        .populate({
+            path:'attendance',
+         
+            populate:{
+                path: 'studentId',
+                model:'Student'
+            }
+        }) 
+
+        if(!d){
+            return res.status(400).json({
+               message:"not Found",
+                 
+                })
+        }
+           return res.status(200).json({
+            userData:d,
+             
+            })
+    
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
 })
 
 

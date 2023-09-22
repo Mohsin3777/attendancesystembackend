@@ -17,7 +17,7 @@ const{
 // router.post("/login",loginController);
 
 router.post('/createAttendance',markAttendance)
-router.put('/AddAttendance/:_id',addAttendance)
+router.patch('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
 router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
 
