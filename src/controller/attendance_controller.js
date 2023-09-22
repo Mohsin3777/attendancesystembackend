@@ -237,11 +237,24 @@ const addAttendance = async (req, res) => {
         } 
  
         updateList = await updateSingleStatus(attendanceList.attendance,  data.attendanceId);
+var a =attendanceList.attendance
+    //   console.log(updateList );
+        var finalData = await attendanceMonth.updateOne(
+            {_id:req.params._id , "attendance._id":data.attendanceId},
+            // {'attendance._id': "650b2ad61ef2a3a11d9b1a7b"},
+            // {'$in':{studentId:{'$in':{rollNumber:1}}}}
+    //   {a :{'$in':{studentId :{'$in':{rollNumber:1}}}}},
+// {$set: {"attendance.$.status":'present'}},
+// {$push:{
+//     attendance:updateList
+// }},
 
-      console.log(updateList );
-        var finalData = await attendanceMonth.findByIdAndUpdate(
-            {_id: req.params._id},
-        {attendance: updateList},
+{
+$set :{
+    "attendance.$.status" : "present"
+}
+},
+  
             { new: true }
         ) 
         
@@ -249,10 +262,10 @@ const addAttendance = async (req, res) => {
             path:'attendance',
             // populate: { path: 'attendance' },
             model: 'Attendance',
-            populate:{
-                path: 'studentId'
-            }
-        }) 
+            // populate:{
+            //     path: 'studentId'
+            // }
+        })
      return   res.status(200).json({suucess:true,
     data:finalData})
 
@@ -344,34 +357,53 @@ var markAllpresent = (schools, oldName, name) => {
 
 var updateSingleStatus = (list,  id) => {
     var newList=[]
-    list.map(item => {
+
+
+    // console.log(list)
+
+
+
+   list.forEach((attendanceRecord) => {
+        if (attendanceRecord._id.toHexString() === '650b3669519947a50a1b92c9') {
+          attendanceRecord.status = 'present';
+
+          console.log('present    '+ attendanceRecord.status)
+        }
+      });
+
+      console.log(list)
+    
+    // list.map(item => {
        
-        var temp = Object.assign({}, item);
+    //     var temp = Object.assign({}, item);
         
      
-        if (item._id.toHexString() === id) {
-        //   console.log(item._id.toHexString() +'aaaa')
-        console.log(item+'aaaaa')
-           if( temp.status === 'present'){
-            // item.status = 'absent'
+    //     if (item._id.toHexString() === id) {
+    //     //   console.log(item._id.toHexString() +'aaaa')
+    //     console.log(item+'aaaaa')
+    //        if( temp.status === 'present'){
+    //         // item.status = 'absent'
 
           
-            item.set('status','absent')
-            console.log('abs')
-           }else{
-            // item.status = 'present'
-            item.set('status','present')
-            console.log('pres')
-           }
-            // if (temp.attendance.studentId.status === oldName) {
+    //         item.set('status','absent')
+    //         console.log('abs')
+    //        }else{
+    //         // item.status = 'present'
+    //         item.set('status','present')
+    //         console.log('pres')
+    //        }
+    //         // if (temp.attendance.studentId.status === oldName) {
              
-            // }
-        }
+    //         // }
+    //     }
+  
+    //     newList.push(item)
 
-        newList.push(item)
+    //       });
 
-          });
-          return newList;
+
+       
+          return list;
 }
 
 
