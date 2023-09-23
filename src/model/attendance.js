@@ -41,6 +41,12 @@ const attendanceSchema = new mongoose.Schema({
     required: true,
   },
 
+  roll: {
+    type: Number,
+    // required: true,
+    default:13
+  },
+
 
 });
 

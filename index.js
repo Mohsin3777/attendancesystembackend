@@ -75,7 +75,8 @@ app.get('/', async (req, res) => {
 
 const Attendance = require('./src/model/attendance');
 const Student = require('./src/model/student');
-const attendanceMonth = require('./src/model/month_attendance')
+const attendanceMonth = require('./src/model/month_attendance');
+const month_attendance = require('./src/model/month_attendance');
 
 app.post('/markAttendance', async (req, res) => {
 
@@ -137,6 +138,87 @@ app.post('/addStudent', async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
+})
+
+// const attendanceMonth = require('./src/model/month_attendance')
+
+app.patch('/filter/:_id', async (req, res) => {
+    try {
+   
+    const d =await month_attendance.findOneAndUpdate(
+        {attendance :{$elemMatch:{roll:{$eq:13},}}},
+        // {_id:req.params._id},
+        // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+
+        // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+        // {id: req.params._id},
+    //    {attendance :{$elemMatch:{studentId:{$elemMatch:{rollNumber:{$eq:1}}},}}},
+    {$set:{'attendance.$.status':'present'}},
+
+    // {arrayFilters:[{"e.status":{$eq:'absent'}} ]},
+
+    // {arrayFilters:[{'e.attendance' :{$elemMatch:{'e._id':{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}},]},
+
+
+    {new : true}
+    
+    
+    )
+    .populate({
+        path:'attendance',
+     
+        populate:{
+            path: 'studentId',
+            model:'Student'
+        }
+    }) 
+       return res.status(200).json({
+        userData:d,
+         
+        })
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+})
+
+
+app.get('/fd/:_id',async(req,res)=>{
+    try {
+   
+        const d =await month_attendance.findOne(
+            // {attendance :{$elemMatch:{status:{$eq:'present'},}}},
+        //  { $and:[  {_id :{$eq:req.params.id}}  , { attendance :{$elemMatch:{'_id':{$eq:'6508672131ccb6be176368ed'},}}}  ]}
+        //    {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
+        // {$set:{'attendance.$.status':'present'}},
+        // {new : true}
+
+        // { attendance :{$elemMatch:{_id:{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}}
+
+        
+        {attendance :{$elemMatch:{status:{$eq:'present'},}}},
+        // { $and:[  {_id :{$eq:req.params._id}}  , { attendance :{$elemMatch:{_id:{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}}  ]}
+        
+        
+        )
+        // .populate({
+        //     path:'attendance',
+         
+        //     populate:{
+        //         path: 'studentId',
+        //         model:'Student'
+        //     }
+        // }) 
+
+
+           return res.status(200).json({
+            userData:d,
+             
+            })
+    
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
 })
 
 

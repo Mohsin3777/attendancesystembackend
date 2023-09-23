@@ -235,38 +235,33 @@ const addAttendance = async (req, res) => {
         if (!attendanceList) {
             return res.status(400).json({ success: false, message: "Not found" })
         } 
- 
-        updateList = await updateSingleStatus(attendanceList.attendance,  data.attendanceId);
-var a =attendanceList.attendance
-    //   console.log(updateList );
-        var finalData = await attendanceMonth.updateOne(
-            {_id:req.params._id , "attendance._id":data.attendanceId},
-            // {'attendance._id': "650b2ad61ef2a3a11d9b1a7b"},
-            // {'$in':{studentId:{'$in':{rollNumber:1}}}}
-    //   {a :{'$in':{studentId :{'$in':{rollNumber:1}}}}},
-// {$set: {"attendance.$.status":'present'}},
-// {$push:{
-//     attendance:updateList
-// }},
+        const id ='6508672131ccb6be176368ed'
+        updateList = await updateSingleStatus(attendanceList.attendance,  id);
 
-{
-$set :{
-    "attendance.$.status" : "present"
-}
-},
-  
-            { new: true }
+    //   console.log(updateList );
+        var finalData = await attendanceMonth.findOneAndUpdate(
+            {id:req.params.id},
+        {$addToSet:{'attendance': req.body}},
+            {
+                // upsert: true,
+                new: true }
         ) 
         
-        .populate({
-            path:'attendance',
-            // populate: { path: 'attendance' },
-            model: 'Attendance',
-            // populate:{
-            //     path: 'studentId'
-            // }
-        })
-     return   res.status(200).json({suucess:true,
+        // .populate({
+        //     path:'attendance',
+        //     // populate: { path: 'attendance' },
+        //     model: 'Attendance',
+        //     populate:{
+        //         path: 'studentId'
+        //     }
+        // }) 
+
+//         if(finalData){
+// return res.json(finalData)
+//         }else{
+//             return  res.json('SOMeTh')
+//         }
+     return   res.status(200).json({sucess:true,
     data:finalData})
 
     } catch (error) {
@@ -316,11 +311,13 @@ const getSingleDayAttendance = async (req, res) => {
             .populate({
                 path:'attendance',
                 // populate: { path: 'attendance' },
-                model: 'Attendance',
+                // model: 'Attendance',
                 populate:{
-                    path: 'studentId'
+                    path: 'studentId',
+                    model:'Student'
                 }
             }) 
+        
      
        
        
