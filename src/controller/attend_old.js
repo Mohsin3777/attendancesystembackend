@@ -288,55 +288,60 @@ return res.status(200).json({success:true,data:updateData})
 const addAttendance = async (req, res) => {
 
 
+    var updateList
     try {
-        var {attendanceStatus, rollNumber}= req.body
-      
-    //   var quaryattendanceStatus ='absent'
-    //   var setattendanceStatus='present';
-    //   if(attendanceStatus=== 'absent'){
-    //       quaryattendanceStatus ='present'
-    //       setattendanceStatus ='absent'
-    //   }else if(attendanceStatus=== 'present'){
-    //       quaryattendanceStatus ='absent'
-    //       setattendanceStatus ='present'
-         
-    //   }
-      
-          const d =await attendanceMonth.findOneAndUpdate(
-            {$and :[{_id:req.params._id}, {attendance :{$elemMatch:{rollNumber:{$eq:rollNumber},}}} ]},
-            
-         
 
-          {$set:{'attendance.$.status':attendanceStatus}},
-      
-  
-          {new : true}
-          
-          
-          )
-          .populate({
-              path:'attendance',
-           
-              // populate:{
-              //     path: 'studentId',
-              //     model:'Student'
-              // }
-          }) 
-      
-          // if(!d){
-          //     return res.status(200).json({
-          //       message:"all are present"
-                   
-          //         })
-          // }
-             return res.status(200).json({
-              data:d,
-               
-              })
-      
-          } catch (error) {
-              return res.status(500).json({ error: error.message })
-          }
+        const data = req.body
+
+
+
+        var attendanceList = await attendanceMonth.findById({ _id: req.params._id })
+        .populate({
+            path:'attendance',
+            // populate: { path: 'attendance' },
+            model: 'Attendance',
+            populate:{
+                path: 'studentId'
+            }
+        }) 
+        ;
+        if (!attendanceList) {
+            return res.status(400).json({ success: false, message: "Not found" })
+        } 
+        const id ='6508672131ccb6be176368ed'
+        updateList = await updateSingleStatus(attendanceList.attendance,  id);
+
+    //   console.log(updateList );
+        var finalData = await attendanceMonth.findOneAndUpdate(
+            {id:req.params.id},
+        {$addToSet:{'attendance': req.body}},
+            {
+                // upsert: true,
+                new: true }
+        ) 
+        
+        // .populate({
+        //     path:'attendance',
+        //     // populate: { path: 'attendance' },
+        //     model: 'Attendance',
+        //     populate:{
+        //         path: 'studentId'
+        //     }
+        // }) 
+
+//         if(finalData){
+// return res.json(finalData)
+//         }else{
+//             return  res.json('SOMeTh')
+//         }
+     return   res.status(200).json({sucess:true,
+    data:finalData})
+
+    } catch (error) {
+   
+        return res.status(500).json({ error: error.message })
+    }
+
 
 
 }
@@ -422,53 +427,34 @@ var markAllpresent = (schools, oldName, name) => {
 
 var updateSingleStatus = (list,  id) => {
     var newList=[]
-
-
-    // console.log(list)
-
-
-
-   list.forEach((attendanceRecord) => {
-        if (attendanceRecord._id.toHexString() === '650b3669519947a50a1b92c9') {
-          attendanceRecord.status = 'present';
-
-          console.log('present    '+ attendanceRecord.status)
-        }
-      });
-
-      console.log(list)
-    
-    // list.map(item => {
+    list.map(item => {
        
-    //     var temp = Object.assign({}, item);
+        var temp = Object.assign({}, item);
         
      
-    //     if (item._id.toHexString() === id) {
-    //     //   console.log(item._id.toHexString() +'aaaa')
-    //     console.log(item+'aaaaa')
-    //        if( temp.status === 'present'){
-    //         // item.status = 'absent'
+        if (item._id.toHexString() === id) {
+        //   console.log(item._id.toHexString() +'aaaa')
+        console.log(item+'aaaaa')
+           if( temp.status === 'present'){
+            // item.status = 'absent'
 
           
-    //         item.set('status','absent')
-    //         console.log('abs')
-    //        }else{
-    //         // item.status = 'present'
-    //         item.set('status','present')
-    //         console.log('pres')
-    //        }
-    //         // if (temp.attendance.studentId.status === oldName) {
+            item.set('status','absent')
+            console.log('abs')
+           }else{
+            // item.status = 'present'
+            item.set('status','present')
+            console.log('pres')
+           }
+            // if (temp.attendance.studentId.status === oldName) {
              
-    //         // }
-    //     }
-  
-    //     newList.push(item)
+            // }
+        }
 
-    //       });
+        newList.push(item)
 
-
-       
-          return list;
+          });
+          return newList;
 }
 
 

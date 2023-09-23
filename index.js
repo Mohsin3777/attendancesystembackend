@@ -118,21 +118,23 @@ app.post('/addStudent', async (req, res) => {
         const data = req.body
         var stude = await Student({
             name: data.name,
-            rollNumber: data.rollNumber
+            rollNumber: data.rollNumber,
+            status:"absent",
+            registered:data.registered
         })
         await stude.save()
 
 
-        var attenModle = await Attendance({
-            studentId:stude._id,
-            date:Date.now(),
-            status:"absent"
-        });
+    //     var attenModle = await Attendance({
+    //         studentId:stude._id,
+    //         date:Date.now(),
+    //         status:"absent"
+    //     });
 
-     await   attenModle.save()
+    //  await   attenModle.save()
        return res.status(200).json({
         userData:stude,
-            attenModle: attenModle
+            // attenModle: attenModle
         })
 
     } catch (error) {
@@ -144,10 +146,21 @@ app.post('/addStudent', async (req, res) => {
 
 app.patch('/filter/:_id', async (req, res) => {
     try {
+  var {attendanceStatus, studentId}= req.body
+
+var quaryattendanceStatus ='absent'
+var setattendanceStatus='present';
+if(attendanceStatus=== 'absent'){
+    quaryattendanceStatus ='present'
+    setattendanceStatus ='absent'
+}else if(attendanceStatus=== 'present'){
+    quaryattendanceStatus ='absent'
+    setattendanceStatus ='present'
    
+}
+
     const d =await month_attendance.findOneAndUpdate(
-        {attendance :{$elemMatch:{roll:{$eq:13},}}},
-        // {_id:req.params._id},
+       {$and :[{_id:req.params._id}, {attendance :{$elemMatch:{rollNumber:{$eq:'1'},}}} , {attendance :{$elemMatch:{status:{$eq:quaryattendanceStatus},}}},]},
         // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
 
         // {attendance :{$elemMatch:{'studentId._id':{$eq:'6508672131ccb6be176368eb'},}}},
@@ -159,7 +172,9 @@ app.patch('/filter/:_id', async (req, res) => {
 
     // {arrayFilters:[{'e.attendance' :{$elemMatch:{'e._id':{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}},]},
 
+    {$set:{'attendance.$.status':setattendanceStatus}},
 
+    // {arrayFilters:[{"e.status":{$eq:'absent'}} ]},
     {new : true}
     
     
@@ -167,11 +182,18 @@ app.patch('/filter/:_id', async (req, res) => {
     .populate({
         path:'attendance',
      
-        populate:{
-            path: 'studentId',
-            model:'Student'
-        }
+        // populate:{
+        //     path: 'studentId',
+        //     model:'Student'
+        // }
     }) 
+
+    // if(!d){
+    //     return res.status(200).json({
+    //       message:"all are present"
+             
+    //         })
+    // }
        return res.status(200).json({
         userData:d,
          
@@ -193,11 +215,7 @@ app.get('/fd/:_id',async(req,res)=>{
         // {$set:{'attendance.$.status':'present'}},
         // {new : true}
 
-        // { attendance :{$elemMatch:{_id:{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}}
-
-        
-        {attendance :{$elemMatch:{status:{$eq:'present'},}}},
-        // { $and:[  {_id :{$eq:req.params._id}}  , { attendance :{$elemMatch:{_id:{$eq:'650b2ad61ef2a3a11d9b1a7b'},}}}  ]}
+        { attendance :{$elemMatch:{_id:{$eq:'6508672131ccb6be176368ed'},}}}
         
         
         )

@@ -23,6 +23,11 @@ const studentSchema = new mongoose.Schema({
       type:Boolean,
       default:false
     },
+    status: {
+      type: String,
+      enum: ['present', 'absent'],
+      required: true,
+    },
     // Other student-related fields
   });
   
