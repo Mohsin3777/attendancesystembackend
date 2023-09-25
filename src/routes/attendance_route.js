@@ -5,7 +5,10 @@ const{
     addAttendance,
     getSingleDayAttendance,
     getAllDayAttendance,
-    addStudentsInAttendance,
+
+
+    markArrivalTimeAttendance,
+    markEndTimeAttendance,
     
 
     registerStudent,
@@ -22,6 +25,12 @@ router.patch('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
 // router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
 router.get('/getallDaysAttendance',getAllDayAttendance)
+
+
+router.patch('/markArrivalTime/:_id',markArrivalTimeAttendance)
+router.patch('/markEndTime/:_id',markEndTimeAttendance)
+
+
 
 
 
