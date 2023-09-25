@@ -4,6 +4,7 @@ const{
     markAttendance,
     addAttendance,
     getSingleDayAttendance,
+    getAllDayAttendance,
     addStudentsInAttendance,
     
 
@@ -19,7 +20,8 @@ const{
 router.post('/createAttendance',markAttendance)
 router.patch('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
-router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
+// router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
+router.get('/getallDaysAttendance',getAllDayAttendance)
 
 
 

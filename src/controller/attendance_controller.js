@@ -19,144 +19,8 @@ var list = [
     "december"
 ]
 
-const createAttendance11 = async (req, res) => {
-
-    var studentid_with_status = []
-    try {
 
 
-        // const checkAlreadyCreated= await attendanceMonth.findOne({date:Date.now()})
-
-        // console.log(checkAlreadyCreated)
-        // if(checkAlreadyCreated)
-        // return res.status(400).json({ message: "Today date list already created" })
-        var attendance = await Student.find()
-
-        if (!attendance) {
-            return res.status(400).json({ message: "List is Empty" })
-        }
-
-        attendance.map((val) => {
-         
-
-            studentid_with_status.push(Attendance({
-                studentId: val['_id'], // Replace with the actual student ID
-                date: Date.now(),     // Use the current date
-                status: 'absent',
-            }))
-        })
-        // return res.status(200).json({ data:list })
-
-        const date = new Date();
-        const currentMonth = date.getMonth();
-        const currentday = date.getDate();
-        console.log(currentday); //2020
-        const data = req.body
-
-
-        var new1 = new attendanceMonth({
-            // date:  Date("2023-09-14T08:45:28.662Z"), 
-            // date: new Date("2018-10-24T08:55:13.331Z"),
-            date:Date.now(),
-            monthNo: studentid_with_status[currentMonth],
-            DayNo:currentday.toString(),
-            attendance: studentid_with_status
-            // attendance:{$push:newAttendance}
-            // $push :{attendance:  newAttendance}
-        })
-
-        // console.log(new1)
-        await new1.save()
-
-        return res.status(200).json({
-            // data:newAttendance
-            data: new1
-        })
-
-    } catch (error) {
-        return res.status(500).json({ error: error.message })
-    }
-}
-
-//when we add attendnace model
-const createAttendance2 = async (req, res) => {
-
-    var studentid_with_status = []
-    try {
-var d=new Date()
-console.log(d)
-
-console.log(d.getDay()+ ' '+d.getMonth()+ ' ' +d.getFullYear())
-        var atten = await  attendanceMonth.findOne({date:{ $gte: d.setHours(0, 0, 0, 0), $lt: d.setHours(23, 59, 59, 999) } })
-        .populate({
-            path:'attendance',
-            // populate: { path: 'attendance' },
-            model: 'Attendance',
-            populate:{
-                path: 'studentId'
-            }
-        }) 
-        if (atten) {
-            // console.log(atten)
-            // return res.status(400).json({ message:"Already created" })
-            return res.status(200).json({success:true, message:"Already created" ,
-        data:atten
-        })
-        }
-var students =await Student.find({registered:true})
-
-
-        
-        // var attendance = await Attendance.find({registered:{$in:true}})
-              
-        var attendance = await Attendance.find().populate('studentId')
-
-        if (!attendance) {
-            // return res.status(400).json({ message: "List is Empty" })
-        }
-// console.log(attendance)
-
-attendance.map( (val)=>{
-    if(val.studentId.registered === true){
-        studentid_with_status.push(val)
-    }
-})
-// for (var j = 0; j < attendance.length; j++){
-
-//     console.log(attendance[j].registered);
-//     studentid_with_status.push(attendance[j]._id)
-    
-//     }
-
-        const date = new Date();
-        const currentMonth = date.getMonth();
-        const currentday = date.getDate();
-        console.log(currentday); //2020
-        const data = req.body
-
-
-        var new1 = new attendanceMonth({
-        
-            date:date.getTime(),
-            monthNo: studentid_with_status[currentMonth],
-            DayNo:currentday.toString(),
-            attendance: studentid_with_status
-            // attendance:{$push:newAttendance}
-            // $push :{attendance:  newAttendance}
-        })
-
-        // console.log(new1)
-        await new1.save()
-
-        return res.status(200).json({
-            // data:newAttendance
-            data: new1
-        })
-
-    } catch (error) {
-        return res.status(500).json({ error: error.message })
-    }
-}
 
 
 //when we add student model
@@ -290,17 +154,7 @@ const addAttendance = async (req, res) => {
 
     try {
         var {attendanceStatus, rollNumber}= req.body
-      
-    //   var quaryattendanceStatus ='absent'
-    //   var setattendanceStatus='present';
-    //   if(attendanceStatus=== 'absent'){
-    //       quaryattendanceStatus ='present'
-    //       setattendanceStatus ='absent'
-    //   }else if(attendanceStatus=== 'present'){
-    //       quaryattendanceStatus ='absent'
-    //       setattendanceStatus ='present'
-         
-    //   }
+  
       
           const d =await attendanceMonth.findOneAndUpdate(
             {$and :[{_id:req.params._id}, {attendance :{$elemMatch:{rollNumber:{$eq:rollNumber},}}} ]},
@@ -323,12 +177,7 @@ const addAttendance = async (req, res) => {
               // }
           }) 
       
-          // if(!d){
-          //     return res.status(200).json({
-          //       message:"all are present"
-                   
-          //         })
-          // }
+        
              return res.status(200).json({
               data:d,
                
@@ -369,6 +218,39 @@ const toMarkAllpresent = async (req, res) => {
 }
 
 
+const getAllDayAttendance = async (req, res) => {
+    try {
+        const monthAttendance = await attendanceMonth.find(
+           
+            )
+            // .populate('attendance')
+            
+            .populate({
+                path:'attendance',
+          
+                // model: 'Attendance',
+                // populate:{
+                //     path: 'studentId',
+                //     model:'Student'
+                // }
+            }) 
+        
+     
+       
+       
+        if (!monthAttendance)
+            return res.status(400).json({ success: false, message: "not found" })
+
+console.log(monthAttendance)
+        return res.status(200).json({ success: true, data: monthAttendance })
+    } catch (error) {
+        return res.status(400).json({ success: true, error: error.message })
+
+    }
+
+}
+
+
 const getSingleDayAttendance = async (req, res) => {
     try {
         const monthAttendance = await attendanceMonth.findById({ _id: req.params._id },
@@ -400,6 +282,8 @@ console.log(monthAttendance)
     }
 
 }
+
+
 
 
 
@@ -482,7 +366,7 @@ module.exports = {
     markAttendance: createAttendance,
     addAttendance,
     getSingleDayAttendance,
-    addStudentsInAttendance
+    getAllDayAttendance,
 
 
     // getAllEventController,
