@@ -31,14 +31,17 @@ const studentSchema = new mongoose.Schema({
 
 
  arrivalTime:   {
-      type:String,
+  type: Date,
+      // type:String,
       // default: new Date().toISOString()
       default:''
 
     },
     endTime:   {
-      type:String,
+      type: Date,
+      // type:String,
       // default: new Date().toISOString()
+      
       default:''
     },
 

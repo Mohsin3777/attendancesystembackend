@@ -196,7 +196,7 @@ const markArrivalTimeAttendance = async (req, res) => {
 
 
     try {
-        var {attendanceStatus, rollNumber } = req.body
+        var {attendanceStatus, rollNumber  , arrivalTime} = req.body
 
 
         const d = await attendanceMonth.findOneAndUpdate(
@@ -204,8 +204,8 @@ const markArrivalTimeAttendance = async (req, res) => {
 
 
 
-            { $set: { 'attendance.$.arrivalTime': new Date().toISOString(),
-            // 'attendance.$.status': attendanceStatus 
+            { $set: { 'attendance.$.arrivalTime': arrivalTime,
+            'attendance.$.status': attendanceStatus 
             // 'attendance.$.status': attendanceStatus 
 
         } },
@@ -244,7 +244,8 @@ const markEndTimeAttendance = async (req, res) => {
 
 
     try {
-        var { oldEndTime, rollNumber } = req.body
+        var currentDate = new Date()
+        var { oldEndTime, rollNumber ,endTime } = req.body
 
         checkArrarivalTimeisFilled = await attendanceMonth.findOne(
             // {_id:req.params._id}
@@ -263,17 +264,14 @@ const markEndTimeAttendance = async (req, res) => {
            if(el.arrivalTime ===''){
             return res.status(400).json({success:false,message:"please first select arrival time"})
 
-           }else{
-            startTime = el.arrivalTime
-
-        
            }
+           startTime = el.arrivalTime
                 
              }
         }
         )
         const startDateFormat = new Date(startTime);
-        const timeDifference = calculateTimeDifference(startDateFormat,  Date.now());
+        const timeDifference = calculateTimeDifference(startDateFormat,  new Date(endTime));
 console.log(`Hours: ${timeDifference.hours}, Minutes: ${timeDifference.minutes}`);
 
       
@@ -286,7 +284,7 @@ const totalHours= `Hours: ${timeDifference.hours} Minutes: ${timeDifference.minu
 
 
 
-            { $set: {'attendance.$.endTime': new Date().toISOString(),
+            { $set: {'attendance.$.endTime':endTime,
             'attendance.$.totalTimeSpend': totalHours
         } },
 
