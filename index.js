@@ -12,6 +12,11 @@ const databaseConnection = require("./src/connections/conn");
 // Connect to the MongoDB database
 databaseConnection.connect();
 
+app.use((req, res, next) => {
+    res.header('access-control-allow-origin', '*');
+    next();
+  });
+
 
 //route import
 const attendanceRoute = require('./src/routes/attendance_route')
@@ -120,7 +125,9 @@ app.post('/addStudent', async (req, res) => {
             name: data.name,
             rollNumber: data.rollNumber,
             status:"absent",
-            registered:data.registered
+            registered:data.registered,
+            // endTime:new Date(),
+            // arrivalTime:new Date(),
         })
         await stude.save()
 

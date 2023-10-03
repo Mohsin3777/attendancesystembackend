@@ -29,6 +29,19 @@ const studentSchema = new mongoose.Schema({
       required: true,
     },
     // Other student-related fields
+
+  
+    arrivalTime: {
+      type: Date,
+      default:new Date()
+      
+    },
+
+    endTime: {
+      type: Date,
+      default:new Date()
+      
+    }
   });
   
   module.exports = mongoose.model('Student', studentSchema);
