@@ -4,8 +4,11 @@ const{
     markAttendance,
     addAttendance,
     getSingleDayAttendance,
-    addStudentsInAttendance,
     getAllDayAttendance,
+
+
+    markArrivalTimeAttendance,
+    markEndTimeAttendance,
     
 
     registerStudent,
@@ -20,8 +23,14 @@ const{
 router.post('/createAttendance',markAttendance)
 router.patch('/AddAttendance/:_id',addAttendance)
 router.get('/GetSingleDayAttendance/:_id',getSingleDayAttendance)
-router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
-router.get('/getAllDaysAttendance/',getAllDayAttendance)
+// router.put('/addStudentsInAttendance/:_id',addStudentsInAttendance)
+router.get('/getallDaysAttendance',getAllDayAttendance)
+
+
+router.patch('/markArrivalTime/:_id',markArrivalTimeAttendance)
+router.patch('/markEndTime/:_id',markEndTimeAttendance)
+
+
 
 
 

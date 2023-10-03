@@ -28,6 +28,28 @@ const studentSchema = new mongoose.Schema({
       enum: ['present', 'absent'],
       required: true,
     },
+
+
+ arrivalTime:   {
+  type: Date,
+      // type:String,
+      // default: new Date().toISOString()
+      default:''
+
+    },
+    endTime:   {
+      type: Date,
+      // type:String,
+      // default: new Date().toISOString()
+      
+      default:''
+    },
+
+    totalTimeSpend:   {
+      type:String,
+      // default: new Date().toISOString()
+      default:''
+    },
     // Other student-related fields
 
   
