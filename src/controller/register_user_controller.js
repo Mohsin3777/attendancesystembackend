@@ -8,26 +8,7 @@ const Student = require('../model/student')
 const registerStudent= async(req,res)=>{
     try {
       var data =req.body
-      // var stu = await Student.findById({_id:req.params._id})
-  
-      // if (!stu) {
-      //     return res.status(400).json({ message: "List is Empty" })
-      // }
-
-  //  var   checkALreadyRegisterorNot =await  Attendance.findOne({
-  //   studentId:req.params._id
-  //  })
-
-  //  if(checkALreadyRegisterorNot)
-  //  return res.status(400).json({ message: "ALready registered" })
-  
-  //    var registerStudent = Attendance({
-  //     studentId:req.params._id,
-  //     status:'absent',
-  //     date:Date.now(),
-  //     registered:true
-  
-  //    })
+   
 
      var registerStudent =await Student.findOneAndUpdate({
       _id:req.params._id

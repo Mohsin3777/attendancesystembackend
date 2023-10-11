@@ -23,7 +23,7 @@ var list = [
 
 
 
-//when we add student model
+//create daily attendance
 const createAttendance = async (req, res) => {
 
     var studentid_with_status = []
@@ -93,7 +93,7 @@ const createAttendance = async (req, res) => {
     }
 }
 
-
+//xxxxxxxxxxxxxxxxxxxxxxxx create attendance end xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 const addStudentsInAttendance = async (req, res) => {
@@ -191,7 +191,7 @@ const addAttendance = async (req, res) => {
 
 }
 
-
+// mark arrival time  
 const markArrivalTimeAttendance = async (req, res) => {
 
 
@@ -237,9 +237,9 @@ const markArrivalTimeAttendance = async (req, res) => {
 
 
 }
+// mark arrival time   end xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-
-// end time
+// end time attendane
 const markEndTimeAttendance = async (req, res) => {
 
 
@@ -315,36 +315,14 @@ const totalHours= `Hours: ${timeDifference.hours} Minutes: ${timeDifference.minu
 
 
 }
-
-
-const toMarkAllpresent = async (req, res) => {
-    var updateList
-    try {
-
-        const data = req.body
+// end time attendane end cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
-        var attendanceList = await attendanceMonth.findById({ _id: req.params._id });
-        if (!attendanceList) {
-            return res.status(400).json({ success: false, message: "Not found" })
-        } else {
-            updateList = markAllpresent(attendanceList['attendance'], 'absent', "present");
-            var finalData = await attendanceMonth.findByIdAndUpdate(
-                { _id: req.params._id },
-                { attendance: updateList },
-                { new: true }
-            )
-            res.send(attendanceList)
-        }
 
 
-    } catch (error) {
-        return res.status(500).json({ error: error.message })
-    }
-}
 
-
+//get all day attendance
 const getAllDayAttendance = async (req, res) => {
     try {
         const monthAttendance = await attendanceMonth.find(
@@ -376,8 +354,8 @@ const getAllDayAttendance = async (req, res) => {
     }
 
 }
-
-
+//get all day attendance end xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+//get single day attendance
 const getSingleDayAttendance = async (req, res) => {
     try {
         const monthAttendance = await attendanceMonth.findById({ _id: req.params._id },
@@ -409,6 +387,7 @@ const getSingleDayAttendance = async (req, res) => {
     }
 
 }
+//get single day attendance end xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
@@ -419,49 +398,48 @@ const getSingleDayAttendance = async (req, res) => {
 
 
 
+// var markAllpresent = (schools, oldName, name) => {
+//     return schools.map(item => {
+//         console.log(item)
+//         var temp = Object.assign({}, item);
+//         if (temp.status === oldName) {
+//             temp.status = name;
+//         }
+//         return temp;
+//     });
+// }
 
-var markAllpresent = (schools, oldName, name) => {
-    return schools.map(item => {
-        console.log(item)
-        var temp = Object.assign({}, item);
-        if (temp.status === oldName) {
-            temp.status = name;
-        }
-        return temp;
-    });
-}
+// var updateSingleStatus = (list, id) => {
+//     var newList = []
+//     list.map(item => {
 
-var updateSingleStatus = (list, id) => {
-    var newList = []
-    list.map(item => {
-
-        var temp = Object.assign({}, item);
-
-
-        if (item._id.toHexString() === id) {
-            //   console.log(item._id.toHexString() +'aaaa')
-            console.log(item + 'aaaaa')
-            if (temp.status === 'present') {
-                // item.status = 'absent'
+//         var temp = Object.assign({}, item);
 
 
-                item.set('status', 'absent')
-                console.log('abs')
-            } else {
-                // item.status = 'present'
-                item.set('status', 'present')
-                console.log('pres')
-            }
-            // if (temp.attendance.studentId.status === oldName) {
+//         if (item._id.toHexString() === id) {
+//             //   console.log(item._id.toHexString() +'aaaa')
+//             console.log(item + 'aaaaa')
+//             if (temp.status === 'present') {
+//                 // item.status = 'absent'
 
-            // }
-        }
 
-    //       });
+//                 item.set('status', 'absent')
+//                 console.log('abs')
+//             } else {
+//                 // item.status = 'present'
+//                 item.set('status', 'present')
+//                 console.log('pres')
+//             }
+//             // if (temp.attendance.studentId.status === oldName) {
 
-    });
-    return newList;
-}
+//             // }
+//         }
+
+//     //       });
+
+//     });
+//     return newList;
+// }
 
 
 var updateSingelStatus = (list, oldStatus, newStatus, id) => {
@@ -484,7 +462,7 @@ var updateSingelStatus = (list, oldStatus, newStatus, id) => {
 
 
 
-
+//this function used for calcuate time
 function calculateTimeDifference(date1, date2) {
     // Calculate the time difference in milliseconds
     const timeDifference = Math.abs(date2 - date1);
@@ -495,7 +473,7 @@ function calculateTimeDifference(date1, date2) {
   
     return { hours, minutes };
   }
-  
+  //this function used for calcuate time end xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
@@ -510,9 +488,4 @@ module.exports = {
     markEndTimeAttendance
 
 
-    // getAllEventController,
-    // addEventSchedule,
-    // getSingleEventWithIdController,
-    // uploadTitleImagevent,
-    // uploadMultiImages,
 }

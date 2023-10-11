@@ -6,7 +6,7 @@ const axios = require('axios')
 const port = process.env.PORT || 8000
 app.use(express.json()); // Parse incoming JSON data
 app.use(express.urlencoded({ extended: true }));
-const evt = require('./src/model/event')
+
 const databaseConnection = require("./src/connections/conn");
 
 // Connect to the MongoDB database
@@ -22,30 +22,32 @@ app.use((req, res, next) => {
 const attendanceRoute = require('./src/routes/attendance_route')
 const registerUserRoute = require('./src/routes/register_user_route')
 const userRoute = require('./src/routes/user_routes')
+const authRoute = require('./src/routes/auth_route')
 //routes
 app.use("/api/attendance", attendanceRoute);
 app.use("/api/registerUser", registerUserRoute);
 app.use("/api/userDoc", userRoute);
+app.use("/api/auth", authRoute);
 
-app.post('/', async (req, res) => {
-    const data = {
-        "id": 1,
-        "name": "ali"
-    }
+// app.post('/', async (req, res) => {
+//     const data = {
+//         "id": 1,
+//         "name": "ali"
+//     }
 
-    try {
-        var d = await evt({
-            name: 'amir',
-            id: "2"
-        })
+//     try {
+//         var d = await evt({
+//             name: 'amir',
+//             id: "2"
+//         })
 
-        await d.save()
+//         await d.save()
 
-        res.json(d)
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message })
-    }
-})
+//         res.json(d)
+//     } catch (error) {
+//         res.status(400).json({ success: false, error: error.message })
+//     }
+// })
 
 app.get('/getdata', async (req, res) => {
 
@@ -126,6 +128,7 @@ app.post('/addStudent', async (req, res) => {
             rollNumber: data.rollNumber,
             status:"absent",
             registered:data.registered,
+            email:data.email
             // endTime:new Date(),
             // arrivalTime:new Date(),
         })

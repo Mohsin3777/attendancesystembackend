@@ -13,7 +13,7 @@ const studentSchema = new mongoose.Schema({
     },
     email: {
       type: String,
-      default:"mmm@g.com"
+      default:""
     },
     profilePic:{
       type:String,
